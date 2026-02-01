@@ -1,5 +1,7 @@
 let historico = []
-let movi = {}
+let saida = 0
+let entrada = 0
+let saldo = 0
 
 
 
@@ -74,13 +76,33 @@ function movimentacao(){
 
     //chama a função que fara o calculo e adicionara os dados
     botao.onclick = ()=>{soma(Number(valor.value),select.value)}
-
 }
 
-function atualizaHist(tip,valo){
-    movi = {
-        tip:tip,
-        valo:valo
+
+function atualizaHist(){    
+    
+    const re = document.querySelector('#hist')
+    limpa(re)
+    
+    let titulo = document.createElement('h2')
+    re.appendChild(titulo)
+    let co = historico.length
+
+    for( co of historico ){
+        let pa = document.createElement('p')
+
+
+        if(co.tipo == 'saida'){
+            pa.innerText =`Saida de - ${co.valor.toLocaleString('pt-BR',{style:'currency',
+                currency:'BRL'
+            })}`
+            
+        }else{
+            pa.innerText =` Entrada de + ${co.valor.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})} `
+        }
+        titulo.innerText = 'Historico'
+        re.appendChild(pa)
+
     }
 }
 
@@ -98,59 +120,54 @@ function atualizaDash(id,valor = 0,cor ='black'){
     item.style.color = cor
     local.appendChild(item)
 }
-let saida = 0
-let entrada = 0
-let saldo = 0
+
 
 function soma(valor,tipo){
+    let limpahist = document.querySelector('#hist')
+    limpa(limpahist)
+    let p = document.querySelector('#mensa')
     
-    let resposta = document.getElementById('res')
-    let p = document.createElement('p')
-
-
+    
     // Verifica se o valor digitado não está vazio, e também verifica se o tipo foi selecionado
     if( isNaN(valor)|| valor <= 0){
         p.innerText ='[ERROR] Digite um valor!! valido'
         p.style.color = 'red'
-    } else{
-        
+
+    } else if(tipo != 'saida' && tipo != 'entrada'){
+        p.innerText ='[ERROR] Escolha o tipo de movimentação'
+        p.style.color = 'red'
+
+    }else{
+        let movi = {}
+
             // Verifica o tipo e segrega o valor 
         if(tipo == 'entrada'){
+
             entrada += valor
             saldo += valor 
             p.innerText =`Movimentação de ${valor.toLocaleString('pt-BR', {style:'currency',currency:'BRl'})}`
             p.style.color='#05263f'
             atualizaDash('entrada',entrada,'green')
-
-
+            
         }else if(tipo == 'saida'){  
             saldo -= valor
             saida += valor
             p.innerText =`Movimentação de ${valor.toLocaleString('pt-BR', {style:'currency',currency:'BRl'})}`
-            p.style.color='#05263f'}
+            p.style.color='#05263f'
             atualizaDash('saida',saida,'red')
-    }
-    if(tipo != 'saida' && tipo != 'entrada'){
-        p.innerText ='[ERROR] Escolha o tipo de movimentação'
-        p.style.color = 'red'
-    }
-    let corSaldo = 'black'
-    resposta.appendChild(p)
-    atualizaDash('saldo',saldo,corSaldo)
-    
-    
+        }
 
-    if(saldo > 0 ){
-        corSaldo = 'green'
-    }else{
+        movi['valor'] = valor
+        movi['tipo'] = tipo
+        historico.push(movi)
+    }
+
+    let corSaldo = '#05263f'
+    if(saldo == 0 ){
+        corSaldo = 'black'
+    }else if (saldo < 0){
         corSaldo = 'red'
     }
-
-    movi['valo'] = valor
-    movi['tip'] = tipo
-    historico.push(movi)
-    console.log(historico)
-
+    atualizaDash('saldo',saldo,corSaldo)
     
 }
-
