@@ -1,40 +1,68 @@
+// VARIÁVEIS GLOBAIS
+
+// Array que guarda todo o histórico de movimentações
 let historico = []
+
+// Total de saídas
 let saida = 0
+
+// Total de entradas
 let entrada = 0
+
+// Saldo final
 let saldo = 0
 
 
+// AO CARREGAR A PÁGINA
 
 window.onload = ()=>{
-   atualizaDash('entrada',entrada,'green')
-   atualizaDash('saida',saida,'red')
-   atualizaDash('saldo',saldo)
-   atualizaHist()
+    // Carrega os dados salvos no localStorage
+    carregarEstado()
+
+    // Atualiza os valores do dashboard
+    atualizaDash('entrada',entrada,'green')
+    atualizaDash('saida',saida,'red')
+    atualizaDash('saldo',saldo)
+    
+    // Atualiza o historico
+    atualizaHist()
+    // Ajusta a cor do saldo (positivo, negativo ou zero)
+    corDoSaldo()
 }
+
+
+// FUNÇÃO PARA LIMPAR CONTEÚDO
+
+
+// Limpa o conteúdo HTML de um elemento
 function limpa(c){
     c.innerHTML=''
 }
+
+
+// FUNÇÃO PARA CRIAR A MOVIMENTAÇÃO
+
 function movimentacao(){
     const res = document.getElementById('res')
+
+    // Limpa a área de resposta
     limpa(res)
 
-
+    // Cria o texto "Qual valor?"
     let paragrafo = document.createElement('p')
     paragrafo.innerText = 'Qual valor? '
     res.appendChild(paragrafo)
 
-
-    //recebe o valor da movimentação
+    // Input para receber o valor da movimentação
     let valor = document.createElement('input')
     valor.type = 'number'
     res.appendChild(valor)
 
-
-    //select para a escolha de entrada e saida
+    // Cria o select para escolher entrada ou saída
     let select = document.createElement('select')
     select.id = 'tipo'
 
-    //option escolha "placeholder"
+    // Option inicial (placeholder)
     let opcaoEscolha = document.createElement('option')
     opcaoEscolha.value = ''
     opcaoEscolha.innerText = 'Escolha..'
@@ -42,69 +70,78 @@ function movimentacao(){
 
     select.appendChild(opcaoEscolha)
 
+    // Array com as opções do select
+    const opcao = [
+        { valor:'entrada', text:'Entrada' },
+        { valor:'saida', text:'Saida' }
+    ]
 
-    //array guardando as opçoes
-    const opcao = [{ valor:'entrada',text:'Entrada'},{ valor:'saida',text:'Saida'}]
-
-    //for para inserir e mostrar as opções no select    
+    // Loop para criar e adicionar as opções no select
     for(const op of opcao){
-
         let option = document.createElement('option')
-
         option.value = op.valor
         option.text = op.text
-    
         select.appendChild(option)
-
     }
 
-    //evento para mostra qual opção o usuario selecionou
+    // Evento que desativa o placeholder após a escolha
     select.addEventListener('change', ()=>{
         if(select.value !== ''){
             opcaoEscolha.disabled = true
         }
     })
+
     res.appendChild(select)
 
-    //botao para adicionar a movimentação
+    // Botão para adicionar a movimentação
     let botao = document.createElement('input')
     botao.type = 'button' 
     botao.value = 'Adicionar'
     res.appendChild(botao)
 
-    
-
-    //chama a função que fara o calculo e adicionara os dados
-    botao.onclick = ()=>{soma(Number(valor.value),select.value)}
+    // Ao clicar, valida os dados e executa o cálculo
+    botao.onclick = ()=>{valida(Number(valor.value),select.value)}
 }
 
+
+// ATUALIZA O HISTÓRICO NA TELA
 
 function atualizaHist(){    
     
-    const re = document.querySelector('#hist')
-    limpa(re)
+    const hist = document.querySelector('#hist')
+    limpa(hist)
     
     let titulo = document.createElement('h2')
-    re.appendChild(titulo)
+    hist.appendChild(titulo)
+
     let co = historico.length
 
-    for( co of historico ){
+    // Percorre o array de histórico
+    for(co of historico){
         let pa = document.createElement('p')
 
-
+        // Se for saída
         if(co.tipo == 'saida'){
-            pa.innerText =`Saida de - ${co.valor.toLocaleString('pt-BR',{style:'currency',
-                currency:'BRL'
-            })}`
-            
-        }else{
-            pa.innerText =` Entrada de + ${co.valor.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})} `
+            pa.innerText =`${formataData(new Date(co.data))} Saida de - ${co.valor.toLocaleString(
+                'pt-BR',
+                {style:'currency', currency:'BRL'}
+            )}`
+        } 
+        // Se for entrada
+        else {
+            pa.innerText =`${formataData(new Date(co.data))} Entrada de + ${co.valor.toLocaleString(
+                'pt-BR',
+                {style:'currency', currency:'BRL'}
+            )}`
         }
-        titulo.innerText = 'Historico'
-        re.appendChild(pa)
 
+        titulo.innerText = 'Historico'
+        hist.appendChild(pa)
     }
 }
+
+
+// ATUALIZA O DASHBOARD
 
 function atualizaDash(id,valor = 0,cor ='black'){
     const local = document.getElementById(id)
@@ -122,52 +159,161 @@ function atualizaDash(id,valor = 0,cor ='black'){
 }
 
 
-function soma(valor,tipo){
-    let limpahist = document.querySelector('#hist')
-    limpa(limpahist)
+// VALIDAÇÃO DOS DADOS
+
+function valida(valor,tipo){
+    
     let p = document.querySelector('#mensa')
-    
-    
-    // Verifica se o valor digitado não está vazio, e também verifica se o tipo foi selecionado
-    if( isNaN(valor)|| valor <= 0){
+    if(!p) return
+
+    // Verifica se o valor é inválido ou menor/igual a zero
+    if(isNaN(valor) || valor <= 0){
         p.innerText ='[ERROR] Digite um valor!! valido'
         p.style.color = 'red'
-
-    } else if(tipo != 'saida' && tipo != 'entrada'){
+    } 
+    // Verifica se o tipo não foi selecionado
+    else if(tipo != 'saida' && tipo != 'entrada'){
         p.innerText ='[ERROR] Escolha o tipo de movimentação'
         p.style.color = 'red'
+    } 
+    // Se tudo estiver certo, executa a soma
+    else {
+        soma(valor,tipo)
+    }
+}
 
-    }else{
-        let movi = {}
 
-            // Verifica o tipo e segrega o valor 
-        if(tipo == 'entrada'){
+// FUNÇÃO DE CÁLCULO
 
-            entrada += valor
-            saldo += valor 
-            p.innerText =`Movimentação de ${valor.toLocaleString('pt-BR', {style:'currency',currency:'BRl'})}`
-            p.style.color='#05263f'
-            atualizaDash('entrada',entrada,'green')
-            
-        }else if(tipo == 'saida'){  
-            saldo -= valor
-            saida += valor
-            p.innerText =`Movimentação de ${valor.toLocaleString('pt-BR', {style:'currency',currency:'BRl'})}`
-            p.style.color='#05263f'
-            atualizaDash('saida',saida,'red')
-        }
+function soma(valor,tipo){
+    const data = new Date()
 
-        movi['valor'] = valor
-        movi['tipo'] = tipo
-        historico.push(movi)
+    // Se for entrada
+    if(tipo == 'entrada'){
+        entrada += valor
+        saldo += valor 
+    } 
+    // Se for saída
+    else if(tipo == 'saida'){  
+        saldo -= valor
+        saida += valor
     }
 
+    // Cria o objeto da movimentação
+    Objetomovi(valor,tipo,data)
+
+    // Atualiza mensagens e dashboard
+    atualizaValores(valor,tipo,data)
+
+    // Ajusta a cor do saldo
+    corDoSaldo()
+}
+
+
+// FORMATA DATA
+
+function formataData (data){
+    return data.toLocaleDateString('pt-BR',{
+        day: '2-digit',
+        month: '2-digit',
+        year: '2-digit'
+    })
+}
+
+
+// ATUALIZA MENSAGEM DE FEEDBACK
+
+function atualizaValores(valor,tipo,data){
+    let p = document.querySelector('#mensa')
+    if(!p) return
+
+    if(tipo == 'entrada'){
+        p.innerText =`${formataData(data)} Movimentação de ${valor.toLocaleString(
+            'pt-BR',
+            {style:'currency',currency:'BRL'}
+        )} adicionada com sucesso!! `
+        p.style.color='#05263f'
+        atualizaDash('entrada',entrada,'green')
+        
+    } else if(tipo == 'saida'){  
+        p.innerText =`${formataData(data)} Movimentação de ${valor.toLocaleString(
+            'pt-BR',
+            {style:'currency',currency:'BRL'}
+        )} adicionada com sucesso!!`
+        p.style.color='#05263f'
+        atualizaDash('saida',saida,'red')     
+    }
+}
+
+
+// CRIA O OBJETO DE MOVIMENTAÇÃO
+
+function Objetomovi(valor,tipo,data){
+    let movi = {}
+    
+    movi['valor'] = valor
+    movi['tipo'] = tipo
+    movi['data'] = data.toISOString()
+
+    // Adiciona no histórico
+    historico.push(movi)  
+
+    //Atualiza o historico
+    atualizaHist()
+
+    // Cria o estado completo da aplicação
+    const estado = {historico, entrada, saida, saldo}
+
+    // Salva no localStorage
+    salvarEstado(estado)
+}
+
+
+
+// DEFINE A COR DO SALDO
+
+function corDoSaldo(){
     let corSaldo = '#05263f'
-    if(saldo == 0 ){
+
+    if(saldo == 0){
         corSaldo = 'black'
-    }else if (saldo < 0){
+    } 
+    else if (saldo < 0){
         corSaldo = 'red'
     }
+
     atualizaDash('saldo',saldo,corSaldo)
+}
+
+
+
+// SALVAR NO LOCALSTORAGE
+
+function salvarEstado(estado){
+    // Converte o objeto para texto JSON
+    const estadoTexto = JSON.stringify(estado)
+
+    // Salva com uma chave fixa
+    localStorage.setItem('financeiroEstado',estadoTexto)
+}
+
+
+
+// CARREGAR DO LOCALSTORAGE
+
+function carregarEstado(){
+    // Busca os dados salvos
+    const estadoTexto = localStorage.getItem('financeiroEstado')
     
+    // Se não existir nada salvo, sai da função
+    if (!estadoTexto) return
+
+    // Converte o texto JSON para objeto
+    const estado = JSON.parse(estadoTexto)
+
+    // Restaura os valores com validação
+    entrada = typeof estado.entrada === 'number' ? estado.entrada : 0
+    saida   = typeof estado.saida   === 'number' ? estado.saida : 0
+    saldo   = typeof estado.saldo   === 'number' ? estado.saldo : 0 
+    historico = Array.isArray(estado.historico) ? estado.historico : []
 }
