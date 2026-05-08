@@ -1,48 +1,12 @@
-// VARIÁVEIS GLOBAIS
-
-// Array que guarda todo o histórico de movimentações
-let historico = []
-
-// Total de saídas
-let saida = 0
-
-// Total de entradas
-let entrada = 0
-
-// Saldo final
-let saldo = 0
-
-
-// AO CARREGAR A PÁGINA
-
-window.onload = ()=>{
-    // Carrega os dados salvos no localStorage
-    carregarEstado()
-
-    // Atualiza os valores do dashboard
-    atualizaDash('entrada',entrada,'green')
-    atualizaDash('saida',saida,'red')
-    atualizaDash('saldo',saldo)
-    
-    // Atualiza o historico
-    atualizaHist()
-    // Ajusta a cor do saldo (positivo, negativo ou zero)
-    corDoSaldo()
-}
-
-
-// FUNÇÃO PARA LIMPAR CONTEÚDO
 
 
 // Limpa o conteúdo HTML de um elemento
-function limpa(c){
+export function limpa(c){
     c.innerHTML=''
 }
-
-
 // FUNÇÃO PARA CRIAR A MOVIMENTAÇÃO
 
-function movimentacao(){
+export function movimentacao(){
     const res = document.getElementById('res')
 
     // Limpa a área de resposta
@@ -102,11 +66,9 @@ function movimentacao(){
     // Ao clicar, valida os dados e executa o cálculo
     botao.onclick = ()=>{valida(Number(valor.value),select.value)}
 }
-
-
 // ATUALIZA O HISTÓRICO NA TELA
 
-function atualizaHist(){    
+export function atualizaHist(){    
     
     const hist = document.querySelector('#hist')
     limpa(hist)
@@ -139,11 +101,9 @@ function atualizaHist(){
         hist.appendChild(pa)
     }
 }
-
-
 // ATUALIZA O DASHBOARD
 
-function atualizaDash(id,valor = 0,cor ='black'){
+export function atualizaDash(id,valor = 0,cor ='black'){
     const local = document.getElementById(id)
     limpa(local)
 
@@ -157,11 +117,9 @@ function atualizaDash(id,valor = 0,cor ='black'){
     item.style.color = cor
     local.appendChild(item)
 }
-
-
 // VALIDAÇÃO DOS DADOS
 
-function valida(valor,tipo){
+export function valida(valor,tipo){
     
     let p = document.querySelector('#mensa')
     if(!p) return
@@ -181,11 +139,9 @@ function valida(valor,tipo){
         soma(valor,tipo)
     }
 }
-
-
 // FUNÇÃO DE CÁLCULO
 
-function soma(valor,tipo){
+export function soma(valor,tipo){
     const data = new Date()
 
     // Se for entrada
@@ -208,22 +164,18 @@ function soma(valor,tipo){
     // Ajusta a cor do saldo
     corDoSaldo()
 }
-
-
 // FORMATA DATA
 
-function formataData (data){
+export function formataData (data){
     return data.toLocaleDateString('pt-BR',{
         day: '2-digit',
         month: '2-digit',
         year: '2-digit'
     })
 }
-
-
 // ATUALIZA MENSAGEM DE FEEDBACK
 
-function atualizaValores(valor,tipo,data){
+export function atualizaValores(valor,tipo,data){
     let p = document.querySelector('#mensa')
     if(!p) return
 
@@ -244,11 +196,9 @@ function atualizaValores(valor,tipo,data){
         atualizaDash('saida',saida,'red')     
     }
 }
-
-
 // CRIA O OBJETO DE MOVIMENTAÇÃO
 
-function Objetomovi(valor,tipo,data){
+export function Objetomovi(valor,tipo,data){
     let movi = {}
     
     movi['valor'] = valor
@@ -267,12 +217,9 @@ function Objetomovi(valor,tipo,data){
     // Salva no localStorage
     salvarEstado(estado)
 }
-
-
-
 // DEFINE A COR DO SALDO
 
-function corDoSaldo(){
+export function corDoSaldo(){
     let corSaldo = '#05263f'
 
     if(saldo == 0){
@@ -284,24 +231,18 @@ function corDoSaldo(){
 
     atualizaDash('saldo',saldo,corSaldo)
 }
-
-
-
 // SALVAR NO LOCALSTORAGE
 
-function salvarEstado(estado){
+export function salvarEstado(estado){
     // Converte o objeto para texto JSON
     const estadoTexto = JSON.stringify(estado)
 
     // Salva com uma chave fixa
     localStorage.setItem('financeiroEstado',estadoTexto)
 }
-
-
-
 // CARREGAR DO LOCALSTORAGE
 
-function carregarEstado(){
+export function carregarEstado(){
     // Busca os dados salvos
     const estadoTexto = localStorage.getItem('financeiroEstado')
     
