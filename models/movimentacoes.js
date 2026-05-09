@@ -1,10 +1,10 @@
-const { FORCE } = require('sequelize/lib/index-hints')
-const db = require ('./db')
+import {db} from './db.js'
 
-const estado = db.sequelize.define('estado',{
-    saldo: { type: db.Sequelize.INTEGER },
-    entradas: { type: db.Sequelize.INTEGER },
-    saidas: { type: db.Sequelize.INTEGER}
+const transacoes = db.sequelize.define('transacoes',{
+    tipo: { type: db.Sequelize.STRING },
+    valor: { type: db.Sequelize.INTEGER },
+    descricao: { type: db.Sequelize.TEXT},
+    data:{ type: db.Sequelize.DATE}
 })
 
-module.exports = estado
+export {transacoes}

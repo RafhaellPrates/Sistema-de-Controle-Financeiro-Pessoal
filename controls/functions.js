@@ -1,12 +1,12 @@
 
 
 // Limpa o conteúdo HTML de um elemento
-export function limpa(c){
+module.exports = function limpa(c){
     c.innerHTML=''
 }
 // FUNÇÃO PARA CRIAR A MOVIMENTAÇÃO
 
-export function movimentacao(){
+module.exports = function movimentacao(){
     const res = document.getElementById('res')
 
     // Limpa a área de resposta
@@ -68,7 +68,7 @@ export function movimentacao(){
 }
 // ATUALIZA O HISTÓRICO NA TELA
 
-export function atualizaHist(){    
+module.exports = function atualizaHist(){    
     
     const hist = document.querySelector('#hist')
     limpa(hist)
@@ -103,7 +103,7 @@ export function atualizaHist(){
 }
 // ATUALIZA O DASHBOARD
 
-export function atualizaDash(id,valor = 0,cor ='black'){
+module.exports = function atualizaDash(id,valor = 0,cor ='black'){
     const local = document.getElementById(id)
     limpa(local)
 
@@ -119,7 +119,7 @@ export function atualizaDash(id,valor = 0,cor ='black'){
 }
 // VALIDAÇÃO DOS DADOS
 
-export function valida(valor,tipo){
+module.exports = function valida(valor,tipo){
     
     let p = document.querySelector('#mensa')
     if(!p) return
@@ -141,7 +141,7 @@ export function valida(valor,tipo){
 }
 // FUNÇÃO DE CÁLCULO
 
-export function soma(valor,tipo){
+module.exports = function soma(valor,tipo){
     const data = new Date()
 
     // Se for entrada
@@ -166,7 +166,7 @@ export function soma(valor,tipo){
 }
 // FORMATA DATA
 
-export function formataData (data){
+module.exports = function formataData (data){
     return data.toLocaleDateString('pt-BR',{
         day: '2-digit',
         month: '2-digit',
@@ -175,7 +175,7 @@ export function formataData (data){
 }
 // ATUALIZA MENSAGEM DE FEEDBACK
 
-export function atualizaValores(valor,tipo,data){
+module.exports = function atualizaValores(valor,tipo,data){
     let p = document.querySelector('#mensa')
     if(!p) return
 
@@ -198,7 +198,7 @@ export function atualizaValores(valor,tipo,data){
 }
 // CRIA O OBJETO DE MOVIMENTAÇÃO
 
-export function Objetomovi(valor,tipo,data){
+module.exports = function Objetomovi(valor,tipo,data){
     let movi = {}
     
     movi['valor'] = valor
@@ -219,7 +219,7 @@ export function Objetomovi(valor,tipo,data){
 }
 // DEFINE A COR DO SALDO
 
-export function corDoSaldo(){
+module.exports = function corDoSaldo(){
     let corSaldo = '#05263f'
 
     if(saldo == 0){
@@ -233,7 +233,7 @@ export function corDoSaldo(){
 }
 // SALVAR NO LOCALSTORAGE
 
-export function salvarEstado(estado){
+module.exports = function salvarEstado(estado){
     // Converte o objeto para texto JSON
     const estadoTexto = JSON.stringify(estado)
 
@@ -242,7 +242,7 @@ export function salvarEstado(estado){
 }
 // CARREGAR DO LOCALSTORAGE
 
-export function carregarEstado(){
+module.exports = function carregarEstado(){
     // Busca os dados salvos
     const estadoTexto = localStorage.getItem('financeiroEstado')
     

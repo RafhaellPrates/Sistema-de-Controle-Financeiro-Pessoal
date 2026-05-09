@@ -1,7 +1,9 @@
-const express = require ('express')
+import 'dotenv/config'
+import express from 'express'
 const app = express()
-const {engine} = require ('express-handlebars')
-const {dashboard} = require('./routes/dashboard')
+import {engine} from 'express-handlebars'
+import {dashboard} from './routes/dashboard.js'
+
 
 
 
