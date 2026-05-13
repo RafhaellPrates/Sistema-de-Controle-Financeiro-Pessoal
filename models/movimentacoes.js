@@ -1,10 +1,9 @@
 import {db} from './db.js'
 
-const transacoes = db.sequelize.define('transacoes',{
-    tipo: { type: db.Sequelize.STRING },
-    valor: { type: db.Sequelize.INTEGER },
+const Transacoes = db.sequelize.define('transacoes',{
+    valor: { type: db.Sequelize.DECIMAL },
     descricao: { type: db.Sequelize.TEXT},
-    data:{ type: db.Sequelize.DATE}
+    tipo: { type: db.Sequelize.STRING }
 })
 
-export {transacoes}
+export {Transacoes}

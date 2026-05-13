@@ -1,27 +1,36 @@
-// VARIÁVEIS GLOBAIS
 
-// Array que guarda todo o histórico de movimentações
-let historico = []
+const adicionar = document.querySelector('#adicionarMovimentacao')
 
-// Variaveis para calculos
-let {saida,entrada,saldo} = 0
-
-
-// AO CARREGAR A PÁGINA
-window.onload = ()=>{
-    // Carrega os dados salvos no localStorage
-    carregarEstado()
-
-    // Atualiza os valores do dashboard
-    atualizaDash('entrada',entrada,'green')
-    atualizaDash('saida',saida,'red')
-    atualizaDash('saldo',saldo)
-    
-    // Atualiza o historico
-    atualizaHist()
-    // Ajusta a cor do saldo (positivo, negativo ou zero)
-    corDoSaldo()
+if(adicionar){
+    adicionar.addEventListener('click',()=>{
+        window.location.href = '/novaMovimentacao'
+    })
 }
 
+const criar = document.querySelector('#criarMovimentacao')
 
+if(criar){
+    criar.addEventListener('submit',(event)=>{
 
+        event.preventDefault()
+
+        const valor = document.querySelector('#valor').value
+        const tipo = document.querySelector('#tipo').value
+        const descricao = document.querySelector('#descricao').value
+
+        fetch('/criarNovaMovimentacao',{
+            method:'POST', 
+            headers:{'Content-type':'application/json'},
+            body: JSON.stringify({
+                valor,
+                tipo,
+                descricao
+            })
+        }).then(
+            console.log('Transação criada com sucesso!!')
+        ).catch((err)=>{
+            console.log(err)
+        })
+
+    })
+}
