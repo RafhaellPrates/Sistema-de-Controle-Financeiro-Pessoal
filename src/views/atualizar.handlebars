@@ -1,0 +1,23 @@
+<form id="dados_atualizados">
+    <input type="hidden" id="id" value="{{transacoes.id}}">
+    <p>
+        Valor: <input type="number" placeholder="R$: 0,00"
+         id="valor" value="{{transacoes.valor}}" required>
+    </p>
+    <p>
+        Descrição: <br><textarea  id="descricao" rows="5" 
+        placeholder="Digite a descrição" required>{{transacoes.descricao}}</textarea>
+    </p>
+    <p>tipo: 
+        <select  id="tipo" required>
+            <option value="entrada" {{#if transacoes.isEntrada}}selected{{/if}}>
+                Entrada
+            </option>
+            <option value="saida" {{#if transacoes.isSaida}}selected{{/if}}>
+                Saida
+            </option>
+        </select>
+        <button type="submit" >Atualizar</button>
+       
+    </p>
+</form>
