@@ -4,10 +4,6 @@ const app = express()
 import { engine } from 'express-handlebars'
 import movimentacaoRoutes from './routes/movimentacaoRoutes.js'
 
-
-
-
-
 // config
 
     // Template Engine
@@ -22,8 +18,6 @@ import movimentacaoRoutes from './routes/movimentacaoRoutes.js'
     // Route
     app.use(movimentacaoRoutes)
 
-
-
-
+    
 
 app.listen(8081)
