@@ -40,10 +40,11 @@ const Movemente_update_get = (req,res)=>{
 const Movement_update_post = (req,res)=>{
 
     const  { valor,descricao,tipo } = req.body
-    const dados = valida(req.body)
-
+    
+    const dados = valida(valor,descricao,tipo)
+    console.log(dados)
     if(dados.erros.length > 0){
-        res.json({'erros':erros})
+        res.json({'erros':dados.erros})
     }else{
         Transacoes.update({valor,descricao,tipo},
             {where:{'id':req.params.id}}).then(()=>{
