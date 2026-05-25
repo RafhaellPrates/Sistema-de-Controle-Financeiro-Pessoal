@@ -8,17 +8,22 @@ const Movement_create_get = (req,res)=>{
 
 const Movement_create_post = (req,res)=>{
     
-    const {valor,descricao,tipo} = valida(req.body.valor,req.body.descricao,req.body.tipo)
+    const  { valor,descricao,tipo } = req.body
+    const dados = valida(valor,descricao,tipo)
     
+    if(dados.erros.length > 0){
+        return  res.status(400).json({'erros':dados.erros})
+    }else{
     Transacoes.create({
-        valor: valor,
-        descricao: descricao,  
-        tipo: tipo
+        valor: dados.valor,
+        descricao: dados.descricao,  
+        tipo: dados.tipo
     }).then(()=>{
-        res.sendStatus(200)
+        res.sendStatus(201)
     }).catch((err)=>{
         res.send(err)
     })
+    }
 } 
 
 const Movemente_update_get = (req,res)=>{
@@ -42,7 +47,7 @@ const Movement_update_post = (req,res)=>{
     const  { valor,descricao,tipo } = req.body
     
     const dados = valida(valor,descricao,tipo)
-    console.log(dados)
+    
     if(dados.erros.length > 0){
         res.json({'erros':dados.erros})
     }else{

@@ -18,7 +18,11 @@ if(criar){
                 descricao
             })
         }).then((res)=>{
-            if(res.ok){
+            if(!res.ok){
+                return res.json().then((dados)=>{
+                    alert(dados.erros)
+                })
+            }else{
                 window.location.href = '/'
             }
         }).catch((err)=>{
