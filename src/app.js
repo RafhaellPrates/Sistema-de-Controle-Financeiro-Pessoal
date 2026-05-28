@@ -3,6 +3,7 @@ import express from 'express'
 const app = express()
 import { engine } from 'express-handlebars'
 import movimentacaoRoutes from './routes/movimentacaoRoutes.js'
+import userRoutes from './routes/userRoutes.js'
 
 // config
 
@@ -17,7 +18,7 @@ import movimentacaoRoutes from './routes/movimentacaoRoutes.js'
 
     // Route
     app.use(movimentacaoRoutes)
-
-    
+    app.use(userRoutes)
+   
 
 app.listen(8081)

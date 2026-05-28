@@ -21,9 +21,8 @@ const Movement_create_post = (req,res)=>{
     }).then(()=>{
         res.sendStatus(201)
     }).catch((err)=>{
-        res.send(err)
-    })
-    }
+        res.status(400).json({'Erro: ':err})
+    })}
 } 
 
 const Movemente_update_get = (req,res)=>{

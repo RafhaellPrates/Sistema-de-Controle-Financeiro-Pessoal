@@ -1,3 +1,11 @@
+const adicionar = document.querySelector('#adicionar')
+
+if(adicionar){
+    adicionar.addEventListener('click',()=>{
+        window.location.href = '/nova'
+    })
+}
+
 const criar = document.querySelector('#criar')
 
 if(criar){
@@ -23,7 +31,7 @@ if(criar){
                     alert(dados.erros)
                 })
             }else{
-                window.location.href = '/'
+                window.location.href = '/dashboard'
             }
         }).catch((err)=>{
             console.log(err)
@@ -32,12 +40,6 @@ if(criar){
     })
 }
 
-const adicionar = document.querySelector('#adicionar')
 
-if(adicionar){
-    adicionar.addEventListener('click',()=>{
-        window.location.href = '/nova'
-    })
-}
 
 

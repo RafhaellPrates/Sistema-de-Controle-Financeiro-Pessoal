@@ -2,9 +2,7 @@
 import { where } from "sequelize";
 import { Transacoes } from "../models/movimentacoes.js";
 
-
-
-export const Dashboard_controller =  (req,res)=>{
+export default (req,res)=>{
 
     let entrada = 0
     let saida = 0 

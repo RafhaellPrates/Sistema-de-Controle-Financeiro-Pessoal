@@ -1,10 +1,11 @@
 import express from 'express'
+
 import Movimentacao_controller from '../controllers/movimentacaoController.js'
-import { Dashboard_controller } from '../controllers/dashboardController.js'
-import { resolvePtr } from 'node:dns'
+import Dashboard_controller from '../controllers/dashboardController.js'
+
 const router = express.Router()
 
-router.get('/',Dashboard_controller)
+router.get('/dashboard',Dashboard_controller)
 router.get('/nova',Movimentacao_controller.Movement_create_get)
 router.post('/Nova',Movimentacao_controller.Movement_create_post)
 router.get('/historico',Movimentacao_controller.Movement_history)
