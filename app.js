@@ -4,6 +4,8 @@ const app = express()
 import { engine } from 'express-handlebars'
 import movimentacaoRoutes from './routes/movimentacaoRoutes.js'
 import userRoutes from './routes/userRoutes.js'
+import cookieParser from 'cookie-parser'
+
 
 // config
 
@@ -12,6 +14,7 @@ import userRoutes from './routes/userRoutes.js'
     app.set('view engine','handlebars')
 
     // Middleware
+    app.use(cookieParser())
     app.use(express.urlencoded({extended:true}))
     app.use(express.json())
     app.use(express.static('public'))

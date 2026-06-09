@@ -1,6 +1,8 @@
 
 import { User } from '../models/user.js';
-import bcryptjs  from 'bcryptjs'
+import bcryptjs  from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+
 
 
 const register_get = (req,res)=>{
@@ -53,7 +55,17 @@ const login_post = async (req,res)=>{
         const match = await bcryptjs.compare(senha,user.senha)
 
         if(match){
-            return res.sendStatus(200)
+
+            const token = jwt.sign({id: user.id },process.env.JWT_SECRET,{expiresIn: '1d' })
+
+            return res.cookie('token',token,{
+                httpOnly: true, 
+                sameSite: 'strict', 
+                secure: false, 
+                maxAge: 1000 * 60 * 60 * 24
+            }).redirect('/dashboard')
+            
+
         }else{
             return res.status(401).json({erro:'Credenciais inválidas'})
         }

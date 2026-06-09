@@ -2,7 +2,7 @@
 import { where } from "sequelize";
 import { Transacoes } from "../models/movimentacoes.js";
 
-export default (req,res)=>{
+const Dashboard_controller = (req,res)=>{
 
     let entrada = 0
     let saida = 0 
@@ -41,7 +41,16 @@ export default (req,res)=>{
 
     }).catch((err)=>{
         console.log(err)
-    })
-    
-   
+    }) 
+}
+
+const logout_controller_post = (req,res)=>{
+
+    res.clearCookie('token'); 
+    res.redirect('/login')
+}
+
+export {
+    Dashboard_controller,
+    logout_controller_post
 }

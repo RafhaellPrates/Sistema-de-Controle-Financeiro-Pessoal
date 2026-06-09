@@ -1,5 +1,4 @@
 import express from 'express'
-
 import user_controller from '../controllers/userController.js'
 
 
