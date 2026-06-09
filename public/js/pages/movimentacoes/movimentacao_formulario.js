@@ -1,10 +1,4 @@
-const adicionar = document.querySelector('#adicionar')
 
-if(adicionar){
-    adicionar.addEventListener('click',()=>{
-        window.location.href = '/nova'
-    })
-}
 
 const criar = document.querySelector('#criar')
 
