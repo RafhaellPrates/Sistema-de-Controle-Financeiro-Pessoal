@@ -1,13 +1,11 @@
-
-import { where } from "sequelize";
-import { Transacoes } from "../models/movimentacoes.js";
+import { Transacoes } from "../models/index.js";
 
 const Dashboard_controller = (req,res)=>{
 
     let entrada = 0
     let saida = 0 
 
-    Transacoes.findAll().then((transacoes)=>{
+    Transacoes.findAll( { where: {'user_id' : req.id} }).then((transacoes)=>{
         transacoes.forEach((transacoes)=>{
         
             transacoes = transacoes.get({plain:true})

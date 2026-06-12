@@ -1,12 +1,12 @@
-import { Transacoes } from '../models/movimentacoes.js'
+import { Transacoes } from '../models/index.js'
 import { valida } from '../utils/valida.js'
-
 
 const Movement_create_get = (req,res)=>{
     res.render('movimentacoes/novamovimentacao')
 }
 
 const Movement_create_post = (req,res)=>{
+
     
     const  { valor,descricao,tipo } = req.body
     const dados = valida(valor,descricao,tipo)
@@ -14,10 +14,13 @@ const Movement_create_post = (req,res)=>{
     if(dados.erros.length > 0){
         return  res.status(400).json({'erros':dados.erros})
     }else{
+
     Transacoes.create({
         valor: dados.valor,
         descricao: dados.descricao,  
-        tipo: dados.tipo
+        tipo: dados.tipo,
+        user_id: req.id
+
     }).then(()=>{
         res.sendStatus(201)
     }).catch((err)=>{
@@ -27,32 +30,45 @@ const Movement_create_post = (req,res)=>{
 
 const Movemente_update_get = (req,res)=>{
 
-    Transacoes.findOne({where:{'id': req.params.id}}).then((transacoes)=>{
+    Transacoes.findOne({where:{'user_id' : req.id , 'id': req.params.id}}).then((transacoes)=>{
 
-        transacoes = transacoes.get({plain:true})
+        if(!transacoes){
 
-        transacoes.isEntrada = transacoes.tipo === 'entrada'
-        transacoes.isSaida = transacoes.tipo == 'saida'
+            return res.redirect('/historico')
+        }else{
+            
+            transacoes = transacoes.get({plain:true})
 
-        res.render('movimentacoes/atualizar',{transacoes})
-        
+            transacoes.isEntrada = transacoes.tipo === 'entrada'
+            transacoes.isSaida = transacoes.tipo == 'saida'
+
+            res.render('movimentacoes/atualizar',{transacoes})
+        }
+
     }).catch((err)=>{
         res.send(err)
     })
 }
 
 const Movement_update_post = (req,res)=>{
-
-    const  { valor,descricao,tipo } = req.body
     
-    const dados = valida(valor,descricao,tipo)
+    const dados = valida(req.body.valor,req.body.descricao,req.body.tipo)
     
     if(dados.erros.length > 0){
         res.json({'erros':dados.erros})
     }else{
-        Transacoes.update({valor,descricao,tipo},
-            {where:{'id':req.params.id}}).then(()=>{
-            res.sendStatus(200)
+        Transacoes.update({
+            valor: dados.valor,
+            descricao: dados.descricao,
+            tipo: dados.tipo},
+            {where:{'user_id': req.id , 'id':req.params.id}}).then(([linhas])=>{
+
+                if(linhas === 0 ){
+                    return res.sendStatus(404)
+                }else {
+                    return res.sendStatus(200)
+                }
+            
         }).catch((err)=>{
             res.send(err)
         })
@@ -60,15 +76,20 @@ const Movement_update_post = (req,res)=>{
 }
 
 const Movement_delete = (req,res)=>{
-    Transacoes.destroy({where:{'id': req.params.id}}).then(()=>{
-        res.sendStatus(200)
+    Transacoes.destroy({where:{'user_id': req.id , 'id': req.params.id}}).then((deletados)=>{
+        if(deletados === 0 ){
+            res.sendStatus(404)
+        }else{
+            res.sendStatus(200)
+        }
+        
     }).catch((err)=>{
         res.sendStatus(404)
     })
 }
 
 const Movement_history = (req,res)=>{
-    Transacoes.findAll({order:[['id','DESC']]}).then((transacoes)=>{
+    Transacoes.findAll({where: {'user_id': req.id}, order:[['id','DESC']]}).then((transacoes)=>{
         transacoes = transacoes.map(p => p.get({plain: true}))
         
         res.render('movimentacoes/mostrarHistorico',{transacoes:transacoes})
