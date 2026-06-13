@@ -6,7 +6,6 @@ import {Dashboard_controller,logout_controller_post} from '../controllers/dashbo
 const router = express.Router()
 
 router.get('/dashboard',autenticar,Dashboard_controller)
-router.get('/nova',autenticar,Movimentacao_controller.Movement_create_get)
 router.post('/Nova',autenticar,Movimentacao_controller.Movement_create_post)
 router.get('/historico',autenticar,Movimentacao_controller.Movement_history)
 router.post('/deletar/:id',autenticar,Movimentacao_controller.Movement_delete)

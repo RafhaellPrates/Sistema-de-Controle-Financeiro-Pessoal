@@ -4,10 +4,6 @@ import bcryptjs  from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
 
-
-const register_get = (req,res)=>{
-    res.render('user/register')
-}
 const  register_post = async (req,res)=>{
 
    try{
@@ -37,9 +33,6 @@ const  register_post = async (req,res)=>{
         return res.status(400).json({erro:'ERRO ao criar usuario'})
    }  
 }
-const login_get = (req,res)=>{
-    res.render('user/login')
-}
 const login_post = async (req,res)=>{
 
     const {email,senha} = req.body
@@ -63,7 +56,7 @@ const login_post = async (req,res)=>{
                 sameSite: 'strict', 
                 secure: false, 
                 maxAge: 1000 * 60 * 60 * 24
-            }).redirect('/dashboard')
+            }).sendStatus(200)
             
 
         }else{
@@ -76,8 +69,6 @@ const login_post = async (req,res)=>{
 }
 
 export default{
-    register_get,
     register_post,
-    login_get,
     login_post
 }
