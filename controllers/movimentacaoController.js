@@ -1,9 +1,6 @@
 import { Transacoes } from '../models/index.js'
 import { valida } from '../utils/valida.js'
 
-const Movement_create_get = (req,res)=>{
-    res.render('movimentacoes/novamovimentacao')
-}
 
 const Movement_create_post = (req,res)=>{
 
@@ -34,19 +31,16 @@ const Movemente_update_get = (req,res)=>{
 
         if(!transacoes){
 
-            return res.redirect('/historico')
+            return res.sendStatus(404)
         }else{
             
             transacoes = transacoes.get({plain:true})
 
-            transacoes.isEntrada = transacoes.tipo === 'entrada'
-            transacoes.isSaida = transacoes.tipo == 'saida'
-
-            res.render('movimentacoes/atualizar',{transacoes})
+            res.json({transacoes:transacoes})
         }
 
     }).catch((err)=>{
-        res.send(err)
+        res.json({err})
     })
 }
 
@@ -70,7 +64,7 @@ const Movement_update_post = (req,res)=>{
                 }
             
         }).catch((err)=>{
-            res.send(err)
+            res.json({err})
         })
     }
 }
@@ -92,16 +86,16 @@ const Movement_history = (req,res)=>{
     Transacoes.findAll({where: {'user_id': req.id}, order:[['id','DESC']]}).then((transacoes)=>{
         transacoes = transacoes.map(p => p.get({plain: true}))
         
-        res.render('movimentacoes/mostrarHistorico',{transacoes:transacoes})
+        res.json({transacoes:transacoes})
+
     }).catch((err)=>{
-        res.Json(err)
+        res.json({err})
     })
 }
 
 
 export default {
     Movement_create_post,
-    Movement_create_get,
     Movement_delete,
     Movement_history,
     Movemente_update_get,

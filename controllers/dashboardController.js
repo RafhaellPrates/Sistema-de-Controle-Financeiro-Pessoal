@@ -20,32 +20,21 @@ const Dashboard_controller = (req,res)=>{
 
         const saldo = entrada - saida
 
-        const formata_saldo = saldo.toLocaleString('pt-br',{
-            style:'currency',
-            currency:'BRL'})
-
-        const formata_entrada = entrada.toLocaleString('pt-br',{
-            style:'currency',
-            currency:'BRL'})
-        const formata_saida = saida.toLocaleString('pt-br',{
-            style:'currency',
-            currency:'BRL'
+        return res.json({
+            saldo: saldo,
+            entrada: entrada,
+            saida: saida
         })
 
-        res.render('movimentacoes/dashboard',{
-            saldo: formata_saldo,
-            entrada: formata_entrada,
-            saida: formata_saida})
-
     }).catch((err)=>{
-        console.log(err)
+        return res.json({err})
     }) 
 }
 
 const logout_controller_post = (req,res)=>{
 
-    res.clearCookie('token'); 
-    res.redirect('/login')
+    res.clearCookie('token')
+    res.sendStatus(200)
 }
 
 export {
