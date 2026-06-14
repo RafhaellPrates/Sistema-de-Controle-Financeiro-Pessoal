@@ -4,6 +4,7 @@ import bcryptjs  from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
 
+
 const  register_post = async (req,res)=>{
 
    try{
@@ -54,7 +55,7 @@ const login_post = async (req,res)=>{
             return res.cookie('token',token,{
                 httpOnly: true, 
                 sameSite: 'strict', 
-                secure: false, 
+                secure: process.env.NODE_ENV === 'production', 
                 maxAge: 1000 * 60 * 60 * 24
             }).sendStatus(200)
             
@@ -67,8 +68,26 @@ const login_post = async (req,res)=>{
         res.status(500).json({erro:'Erro interno'})
     }
 }
+const me_get = async (req,res)=>{
+    
+    try{
+        const user = await User.findByPk(req.id,{attributes: ['id','nome','email']})
+        
+        if(!user){
+            return res.status(404).json({erro:'Usuario inexistente'})
+
+        } else {
+
+            return res.status(200).json(user)
+        }
+        
+    } catch {
+        res.status(500).json({erro: 'Erro interno'})
+    }
+}
 
 export default{
     register_post,
-    login_post
+    login_post,
+    me_get
 }
