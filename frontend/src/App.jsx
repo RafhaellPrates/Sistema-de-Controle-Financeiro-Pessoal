@@ -1,16 +1,22 @@
 
 import './App.css'
-import { useEffect } from 'react'
-import { api } from './services/api'
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
+import Home from './pages/home'
+import Sobre from './pages/sobre'
 
 function App() {
-  useEffect(()=>{
-    api()
-    .then((dado)=>{console.log(dado)})
-    .catch((err)=>{console.log(err)})
-  }, [])
-
-  return <p>ola </p>
+  return (
+    <BrowserRouter>
+      <nav>
+        <Link to="/">Home</Link>
+        <Link to="/Sobre">Sobre</Link>
+      </nav>
+      <Routes>
+        <Route path='/' element={<Home/>}/>
+        <Route path='/Sobre' element={<Sobre/>}/>
+      </Routes>
+    </BrowserRouter>
+  )
 }
 
 export default App
