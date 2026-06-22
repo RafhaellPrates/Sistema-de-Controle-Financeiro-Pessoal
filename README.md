@@ -1,59 +1,124 @@
-# Sistema de Controle Financeiro Pessoal
+# 💰 Sistema de Controle Financeiro Pessoal
 
-Projeto pessoal em desenvolvimento com foco em **lógica de negócio** e organização de dados, utilizando JavaScript.  
-O objetivo do projeto é simular um sistema simples de controle financeiro, aplicando conceitos fundamentais de programação e pensamento back-end.
+API REST de controle financeiro com **autenticação por JWT** e **isolamento de dados por usuário**: cada pessoa só enxerga as próprias movimentações. O back-end serve a API e um front em **React** consome essa API como SPA.
 
----
-
-## 🎯 Objetivo do Projeto
-
-Desenvolver um sistema capaz de registrar e organizar movimentações financeiras, permitindo o controle básico de entradas, saídas e saldo, além de servir como base para evolução futura para um back-end completo.
+Projeto pessoal de estudo, em evolução de um CRUD simples para um **SaaS** completo.
 
 ---
 
-## ⚙️ Funcionalidades
+## 🛠️ Stack
 
-- Registro de entradas financeiras
-- Registro de saídas financeiras
-- Cálculo automático do saldo
-- Exibição do histórico de movimentações
-- Atualização dinâmica das informações
+**Back-end**
+- **Node.js** + **Express 5**
+- **Sequelize 6** (ORM) sobre **MySQL** (`mysql2`)
+- **JWT** (`jsonwebtoken`) guardado em **cookie httpOnly**
+- **bcryptjs** (hash de senhas)
+- `cookie-parser`, `cors`, `dotenv`
 
----
-
-## 🧠 Conceitos Aplicados
-
-- Lógica de programação
-- Organização de dados
-- Estruturação de funções
-- Regras de negócio
-- Separação de responsabilidades
-- Pensamento voltado para back-end
+**Front-end**
+- **React 19** + **Vite**
+- **React Router 7**
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
+## ✨ Funcionalidades
 
-- JavaScript
-- HTML
-- CSS
-- Git
-- GitHub
-
----
-
-## 🚀 Próximos Passos (Evolução do Projeto)
-
-- Persistência de dados
-- Criação de API REST
-- Integração com banco de dados
-- Autenticação de usuários
-- Separação do front-end e back-end
+- **Cadastro e login** de usuários com senha protegida por hash (bcrypt).
+- **Sessão via JWT em cookie httpOnly** — token não fica exposto ao JavaScript do navegador.
+- **Isolamento por usuário:** toda movimentação é vinculada ao `user_id` do dono; cada query filtra pelo usuário autenticado, então ninguém vê dados de outro.
+- **CRUD de movimentações** (entradas e saídas): criar, listar histórico, editar e excluir.
+- **Dashboard** com o resumo financeiro do usuário.
+- **Logout** que limpa a sessão.
 
 ---
 
-## 📌 Status do Projeto
+## 🧱 Arquitetura
 
-🚧 Em desenvolvimento
+Organização em camadas (MVC), front e back como **dois programas separados**:
 
-Este projeto está em constante evolução conforme o aprendizado em desenvolvimento back-end.
+```
+routes/        → definem as rotas e aplicam o middleware de autenticação
+controllers/   → regra de negócio (user, movimentação, dashboard)
+models/        → Sequelize: User, Transacoes e a associação entre eles
+middleware/    → auth.js: valida o JWT do cookie e injeta req.id
+frontend/      → SPA em React (Vite) que consome a API
+```
+
+- O middleware `auth` barra qualquer rota protegida sem token válido (`401`).
+- A relação `User.hasMany(Transacoes)` (FK `user_id`) é o que garante o isolamento.
+
+---
+
+## 🔌 Endpoints da API
+
+| Método | Rota                  | Protegida | O que faz                          |
+|--------|-----------------------|:---------:|------------------------------------|
+| POST   | `/register`           | —         | Cadastra usuário                   |
+| POST   | `/login`              | —         | Autentica e seta o cookie JWT      |
+| GET    | `/me`                 | ✅        | Dados do usuário logado            |
+| GET    | `/dashboard`          | ✅        | Resumo financeiro                  |
+| POST   | `/movimentacoes`      | ✅        | Cria movimentação                  |
+| GET    | `/movimentacoes`      | ✅        | Lista o histórico do usuário       |
+| GET    | `/movimentacoes/:id`  | ✅        | Busca uma movimentação             |
+| PUT    | `/movimentacoes/:id`  | ✅        | Edita uma movimentação             |
+| DELETE | `/movimentacoes/:id`  | ✅        | Exclui uma movimentação            |
+| POST   | `/logout`             | ✅        | Encerra a sessão                   |
+
+---
+
+## 🚀 Como rodar localmente
+
+### Pré-requisitos
+- Node.js 18+
+- MySQL rodando, com um banco já criado
+
+### 1. Back-end
+```bash
+# na raiz do projeto
+npm install
+```
+
+Crie um arquivo **`.env`** na raiz com:
+```env
+DB_NAME=nome_do_banco
+DB_USER=seu_usuario
+DB_PASSWORD=sua_senha
+DB_HOST=localhost
+JWT_SECRET=uma_chave_secreta_qualquer
+```
+
+```bash
+npm run dev   # nodemon (ou: npm start)
+# API em http://localhost:8081
+```
+
+> **Schema do banco:** hoje as tabelas são criadas pelo Sequelize (`sync`). Migrations reais com `sequelize-cli` estão no roadmap (issue #1).
+
+### 2. Front-end
+```bash
+cd frontend
+npm install
+npm run dev
+# app em http://localhost:5173
+```
+
+O CORS do back já libera `http://localhost:5173` com credenciais (cookies).
+
+---
+
+## 🗺️ Roadmap
+
+O projeto está virando um SaaS. Próximas frentes (issues abertas no repositório):
+
+- **Dívida técnica:** migrations com sequelize-cli, `.env.example`, middleware central de erro, validação de payload.
+- **Segurança:** rate-limit no login, proteção CSRF, `helmet`, cookie `secure` em produção.
+- **Front (React):** telas de login/registro, dashboard e CRUD consumindo a API, rota protegida, estilização.
+- **SaaS:** categorias, filtro por período, paginação, relatórios/gráficos, exportar CSV.
+- **Billing:** planos e assinatura, integração com Stripe, página de upgrade.
+- **Qualidade & deploy:** testes de API (Vitest/Jest + Supertest), CI no GitHub Actions, deploy (back, front e banco).
+
+---
+
+## 📌 Status
+
+🚧 **Em desenvolvimento ativo** — migrando de um CRUD com renderização no servidor para uma arquitetura **API REST + SPA React**, a caminho de um SaaS multiusuário.
