@@ -86,8 +86,9 @@ const me_get = async (req,res)=>{
     }
 }
 
+
 export default{
     register_post,
     login_post,
-    me_get
+    me_get  
 }
