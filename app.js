@@ -9,9 +9,6 @@ import cookieParser from 'cookie-parser'
 
 // config
 
-    // Template Engine
-    
-
     // Middleware
     app.use(cookieParser())
     app.use(express.urlencoded({extended:true}))
