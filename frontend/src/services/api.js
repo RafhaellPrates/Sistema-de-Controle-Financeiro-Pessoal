@@ -7,7 +7,7 @@ export function api(){
         headers: {'Content-type':'application/json'}
 
     }).then((res)=>{
-
+        
         if(!res.ok){
             throw new Error('falhou: '+ res.status)
         }
