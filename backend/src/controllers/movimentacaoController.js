@@ -2,6 +2,7 @@ import { Transacoes } from '../models/index.js'
 import { valida } from '../utils/valida.js'
 
 
+
 const Movement_create_post = (req,res)=>{
 
     

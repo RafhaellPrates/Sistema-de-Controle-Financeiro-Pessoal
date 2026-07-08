@@ -2,8 +2,8 @@ import 'dotenv/config'
 import express from 'express'
 const app = express()
 import cors from 'cors'
-import movimentacaoRoutes from './routes/movimentacaoRoutes.js'
-import userRoutes from './routes/userRoutes.js'
+import movimentacaoRoutes from './src/routes/movimentacaoRoutes.js'
+import userRoutes from './src/routes/userRoutes.js'
 import cookieParser from 'cookie-parser'
 
 
