@@ -1,12 +1,13 @@
 
 import { useState } from "react"
 import { Link, useNavigate } from "react-router"
+import MostraMsg from "../utils/Msg"
 
 
 export default function Login(){
 
     const [ email, setEmail ] = useState('')
-    const [ password, setPassword ] = useState('')
+    const [ senha, setSenha ] = useState('')
     const navigate = useNavigate()
 
     async function handleSubmit(e){
@@ -18,14 +19,17 @@ export default function Login(){
             credentials: 'include',
             method:'POST',
             headers: {'Content-type':'application/json'},
-            body: JSON.stringify({email:email ,senha: password})
+            body: JSON.stringify({email:email ,senha: senha})
 
         }).then(res => {
 
             if(!res.ok){
-                throw new Error('Email ou senha invalidos ' + res.status)
+                MostraMsg('Email ou senha invalidos ', false)
+                
+            }else{ 
+                navigate('/')
+
             }
-            navigate('/')
         }).catch((err)=>{
             console.error('Erro', err)
         })
@@ -44,9 +48,9 @@ export default function Login(){
 
                 <br />
                 <label>Senha: </label>
-                <input type="password" value={password} 
+                <input type="password" value={senha} 
                 placeholder="********" 
-                onChange={(e)=> setPassword(e.target.value)}required/>
+                onChange={(e)=> setSenha(e.target.value)}required/>
                 
                 <br />
                 <button type="submit">Logar</button>
