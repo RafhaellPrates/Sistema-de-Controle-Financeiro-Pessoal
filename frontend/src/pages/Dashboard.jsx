@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { Link } from 'react-router'
 
 export default function Dashboard(){
     const [ saldo ,setSaldo ] = useState(0)
@@ -36,6 +37,7 @@ export default function Dashboard(){
         <div>
             <p>Saidas: {formatador.format(saida)}</p>
         </div>
+        <button><Link to={'/history'}>history</Link></button>
     </div>    
     )
 }
